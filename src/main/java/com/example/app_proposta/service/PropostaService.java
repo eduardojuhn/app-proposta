@@ -15,10 +15,14 @@ import java.util.List;
 public class PropostaService {
 
     private final PropostaRepository propostaRepository;
+    private final NotificacaoService notificacaoService;
 
     public PropostaResponseDto criar(PropostaRequestDto requestDto) {
         Proposta proposta = PropostaMapper.INSTANCE.convertDtoToProposta(requestDto);
         propostaRepository.save(proposta);
+
+        PropostaResponseDto responseDto = PropostaMapper.INSTANCE.convertEntitytoDto(proposta);
+        notificacaoService.notificar(responseDto, "proposta-pendente.ex");
         return PropostaMapper.INSTANCE.convertEntitytoDto(proposta);
     }
 
